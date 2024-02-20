@@ -2,7 +2,6 @@ package generator
 
 import (
 	"bytes"
-	"fmt"
 	"path/filepath"
 	"strings"
 	"text/template"
@@ -49,7 +48,7 @@ func New(paramsMap map[string]string) (*TypeScriptGRPCGatewayGenerator, error) {
 	}, nil
 }
 
-// Generate take a code generator request and returns a response. it analyse request with registry and use the generated data to render ts files
+// Generate take a code generator request and returns a response. it analyses request with registry and use the generated data to render ts files
 func (t *TypeScriptGRPCGatewayGenerator) Generate(req *plugin.CodeGeneratorRequest) (*plugin.CodeGeneratorResponse, error) {
 	resp := &plugin.CodeGeneratorResponse{}
 
@@ -97,7 +96,7 @@ func (t *TypeScriptGRPCGatewayGenerator) generateFile(fileData *data.File, tmpl 
 	w := bytes.NewBufferString("")
 
 	if fileData.IsEmpty() {
-		w.Write([]byte(fmt.Sprintln("export default {}")))
+		w.Write([]byte("export default {}\n"))
 	} else {
 		err := tmpl.Execute(w, fileData)
 		if err != nil {
