@@ -83,6 +83,8 @@ type Dependency struct {
 	ModuleIdentifier string
 	// Source file will be the file at the end of the import statement.
 	SourceFile string
+	// FullyQualifiedTypeName
+	FullyQualifiedTypeName string
 }
 
 // GetModuleName returns module name = package name + file name to be the unique identifier for source file in a ts file

@@ -448,6 +448,15 @@ func GetTemplate(r *registry.Registry) *template.Template {
 		"renderURL":    renderURL(r),
 		"buildInitReq": buildInitReq,
 		"fieldName":    fieldName(r),
+		"removeWellKnownTypes": func(dependencies []*data.Dependency) []*data.Dependency {
+			var filteredDependencies []*data.Dependency
+			for _, dependency := range dependencies {
+				if mapWellKnownType(dependency.FullyQualifiedTypeName) == "" {
+					filteredDependencies = append(filteredDependencies, dependency)
+				}
+			}
+			return filteredDependencies
+		},
 	})
 
 	t = template.Must(t.Parse(tmpl))
@@ -551,13 +560,28 @@ func tsType(r *registry.Registry, fieldType data.Type) string {
 	} else if !info.IsExternal {
 		typeStr = typeInfo.PackageIdentifier
 	} else {
-		typeStr = data.GetModuleName(typeInfo.Package, typeInfo.File) + "." + typeInfo.PackageIdentifier
+		typeStr = mapWellKnownType(info.Type)
+		if typeStr == "" {
+			typeStr = data.GetModuleName(typeInfo.Package, typeInfo.File) + "." + typeInfo.PackageIdentifier
+		}
 	}
 
 	if info.IsRepeated {
 		typeStr += "[]"
 	}
 	return typeStr
+}
+
+func mapWellKnownType(wellKnownType string) string {
+	switch wellKnownType {
+	case ".google.protobuf.Any":
+		return "any"
+	case ".google.protobuf.Empty":
+		return "Record<never, never>"
+	case ".google.protobuf.Timestamp":
+		return "Date"
+	}
+	return ""
 }
 
 func mapScalaType(protoType string) string {
