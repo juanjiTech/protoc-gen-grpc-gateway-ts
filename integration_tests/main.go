@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"google.golang.org/grpc/credentials/insecure"
 	"net"
 	"net/http"
 	"strings"
@@ -69,7 +70,7 @@ func main() {
 	mux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
 		OrigName: *origName,
 	}))
-	opts := []grpc.DialOption{grpc.WithInsecure()}
+	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 	err = RegisterCounterServiceHandlerFromEndpoint(ctx, mux, "localhost:9000", opts)
 	if err != nil {
 		panic(err)
