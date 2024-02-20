@@ -532,7 +532,7 @@ func GetFetchModuleTemplate() *template.Template {
 	return template.Must(t.Parse(fetchTmpl))
 }
 
-// include is the include template functions copied from
+// include is the include template functions
 // copied from: https://github.com/helm/helm/blob/8648ccf5d35d682dcd5f7a9c2082f0aaf071e817/pkg/engine/engine.go#L147-L154
 func include(t *template.Template) func(name string, data interface{}) (string, error) {
 	return func(name string, data interface{}) (string, error) {
