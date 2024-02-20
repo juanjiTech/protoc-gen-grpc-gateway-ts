@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"github.com/grpc-ecosystem/protoc-gen-grpc-gateway-ts/data"
-	"github.com/grpc-ecosystem/protoc-gen-grpc-gateway-ts/options"
+	"github.com/juanjiTech/protoc-gen-grpc-gateway-ts/data"
+	"github.com/juanjiTech/protoc-gen-grpc-gateway-ts/options"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus" // nolint: depguard
 	"google.golang.org/protobuf/proto"
@@ -79,7 +79,7 @@ func (r *Registry) addFetchModuleDependencies(fileData *data.File) error {
 	log.Debugf("added fetch dependency %s for %s", sourceFile, fileData.TSFileName)
 	fileData.Dependencies = append(fileData.Dependencies, &data.Dependency{
 		ModuleIdentifier: "fm",
-		SourceFile:       sourceFile,
+		SourceFile:       filepath.ToSlash(sourceFile),
 	})
 
 	return nil
