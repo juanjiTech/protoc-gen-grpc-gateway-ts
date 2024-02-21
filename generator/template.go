@@ -19,7 +19,7 @@ import (
 
 const tmpl = `
 {{define "dependencies"}}
-{{range .}}import * as {{.ModuleIdentifier}} from "{{.SourceFile}}"
+{{range removeWellKnownTypes .}}import * as {{.ModuleIdentifier}} from "{{.SourceFile}}"
 {{end}}{{end}}
 
 {{define "enums"}}
