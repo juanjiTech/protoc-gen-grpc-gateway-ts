@@ -27,6 +27,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - run: npm install typescript -g
+
       - name: Set up Go 1.x
         uses: actions/setup-go@v3
         with:
