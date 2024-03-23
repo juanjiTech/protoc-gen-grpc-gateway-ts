@@ -2,6 +2,7 @@ package generator
 
 import (
 	"bytes"
+	"os"
 	"path/filepath"
 	"strings"
 	"text/template"
@@ -86,9 +87,10 @@ func (t *TypeScriptGRPCGatewayGenerator) Generate(req *plugin.CodeGeneratorReque
 			return nil, errors.Wrap(err, "error generating fetch module")
 		}
 
-		resp.File = append(resp.File, generatedFetch)
+		if generatedFetch != nil {
+			resp.File = append(resp.File, generatedFetch)
+		}
 	}
-
 	return resp, nil
 }
 
@@ -115,14 +117,34 @@ func (t *TypeScriptGRPCGatewayGenerator) generateFile(fileData *data.File, tmpl 
 }
 
 func (t *TypeScriptGRPCGatewayGenerator) generateFetchModule(tmpl *template.Template) (*plugin.CodeGeneratorResponse_File, error) {
-	w := bytes.NewBufferString("")
+	w := new(bytes.Buffer)
 	fileName := filepath.ToSlash(filepath.Join(t.Registry.FetchModuleDirectory, t.Registry.FetchModuleFilename))
+
 	err := tmpl.Execute(w, &data.File{EnableStylingCheck: t.EnableStylingCheck})
 	if err != nil {
 		return nil, errors.Wrapf(err, "error generating fetch module at %s", fileName)
 	}
 
 	content := strings.TrimSpace(w.String())
+
+	// check if the file exists
+	stat, err := os.Stat(fileName)
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
+		return nil, err
+	}
+	// if the file exists, load the content and check if it's the same as the generated content
+	var originContent []byte
+	if stat != nil {
+		originContent, err = os.ReadFile(fileName)
+		if err != nil {
+			log.Debugf("error reading file %s, err %s", fileName, err)
+			return nil, err
+		}
+	}
+	if string(originContent) == content {
+		log.Debugf("fetch module content is the same as the existing file, skipping")
+		return nil, nil
+	}
 	return &plugin.CodeGeneratorResponse_File{
 		Name:           &fileName,
 		InsertionPoint: nil,
