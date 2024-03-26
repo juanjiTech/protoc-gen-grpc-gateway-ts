@@ -22,6 +22,8 @@ type TypeScriptGRPCGatewayGenerator struct {
 	// This option will only turn on in integration test to ensure the readability in
 	// the generated code.
 	EnableStylingCheck bool
+
+	fetchModuleGenerated bool
 }
 
 const (
@@ -78,7 +80,7 @@ func (t *TypeScriptGRPCGatewayGenerator) Generate(req *plugin.CodeGeneratorReque
 		needToGenerateFetchModule = needToGenerateFetchModule || fileData.Services.NeedsFetchModule()
 	}
 
-	if needToGenerateFetchModule {
+	if needToGenerateFetchModule && t.fetchModuleGenerated {
 		// generate fetch module
 		fetchTmpl := GetFetchModuleTemplate()
 		log.Debugf("generate fetch template")
@@ -88,6 +90,7 @@ func (t *TypeScriptGRPCGatewayGenerator) Generate(req *plugin.CodeGeneratorReque
 		}
 
 		if generatedFetch != nil {
+			t.fetchModuleGenerated = true
 			resp.File = append(resp.File, generatedFetch)
 		}
 	}
