@@ -55,7 +55,7 @@ import {Environment} from "./environment.pb"
 	defer f.Close()
 	cmd := getTSCCommand()
 	err = cmd.Run()
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, 0, cmd.ProcessState.ExitCode())
 
 	err = removeTestFile("valid.ts")
