@@ -65,7 +65,7 @@ import {Environment} from "./environment.pb"
 func getTSCCommand() *exec.Cmd {
 	cmd := exec.Command("npx", "tsc", "--project", "../testdata/", "--noEmit")
 	cmd.Dir = "../testdata/"
-	cmd.Stderr = os.Stderr
+	cmd.Stderr = os.Stdout
 	cmd.Stdout = os.Stdout
 	return cmd
 }
