@@ -80,7 +80,7 @@ func (t *TypeScriptGRPCGatewayGenerator) Generate(req *plugin.CodeGeneratorReque
 		needToGenerateFetchModule = needToGenerateFetchModule || fileData.Services.NeedsFetchModule()
 	}
 
-	if needToGenerateFetchModule && t.fetchModuleGenerated {
+	if needToGenerateFetchModule && !t.fetchModuleGenerated {
 		// generate fetch module
 		fetchTmpl := GetFetchModuleTemplate()
 		log.Debugf("generate fetch template")
