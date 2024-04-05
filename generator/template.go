@@ -224,9 +224,9 @@ export function fetchReq<I, O>(path: string, init?: InitReq): Promise<O> {
 
   const url = pathPrefix ? ` + "`${pathPrefix}${path}`" + ` : path
 
-  return fetch(url, req).then(r=>r.text()).then(text => {
-    const body: O = JSON.parse(text, dateReviver);
-    return body;
+  return fetch(url, req).then(async r=> {
+    if (!r.ok){throw await r.json()}
+    return JSON.parse(await r.text(), dateReviver);
   }) as Promise<O>
 }
 
